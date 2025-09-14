@@ -129,7 +129,7 @@ TODO
 - Next.js - React framework for full-stack web application development
 - React - JavaScript library
 - TypeScript - JavaScript superset for type safety
-- Supabase – @supabase/ssr TODO
+- Supabase – cloud PostgreSQL database service @supabase/
 - Clerk - Authentication & subscription billing integration Middleware with pre-built UI components and themes
 - Tailwind CSS v4 - CSS framework
 - Shadcn UI - UI component library using primitives from Radix UI
@@ -189,6 +189,14 @@ Your server will run on [http://localhost:3000](http://localhost:3000/)
 
 TODO
 
+`Supabase`
+
+- Supabase, Row Level Security (RLS) policies are `PostgreSQL rules` to restrict access to data(SELECT, INSERT, UPDATE and DELETE) in a table based on a user's identity or attributes. Benefit of this is to not let other user can see another user date by config on database level. And by default when you enable RLS,there will be no rule yet which make you can't access or do anything until set it up. To set it you just need to create a condition that you want and apply to all SELECT, INSERT, UPDATE and DELETE which will use same condition.
+
 ## <a name="implementation-note">Implementation Notes</a>
 
 TODO
+
+Clerk & Supabase integration
+RLS
+(auth.uid())::text) and requesting_user_id()
