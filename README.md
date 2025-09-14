@@ -130,7 +130,7 @@ TODO
 - React - JavaScript library
 - TypeScript - JavaScript superset for type safety
 - Supabase – @supabase/ssr TODO
-- Clerk - Authentication & subscription billing integration with pre-built UI components and themes
+- Clerk - Authentication & subscription billing integration Middleware with pre-built UI components and themes
 - Tailwind CSS v4 - CSS framework
 - Shadcn UI - UI component library using primitives from Radix UI
 - @dnd-kit – Primitives, Hook and functionality for create Drag‑and‑drop UI (I used `@dnd-kit/core`, `@dnd-kit/sortable` and `@dnd-kit/utilities`) TODO
