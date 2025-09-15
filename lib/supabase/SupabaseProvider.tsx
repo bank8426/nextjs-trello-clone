@@ -17,7 +17,7 @@ const SupabaseProvider = ({ children }: { children: React.ReactNode }) => {
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   useEffect(() => {
-    if (session) return;
+    if (!session) return;
 
     const client = createClient(
       process.env.NEXT_PUBLIC_SUPERBASE_URL!,
