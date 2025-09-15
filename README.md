@@ -193,6 +193,10 @@ TODO
 
 - Supabase, Row Level Security (RLS) policies are `PostgreSQL rules` to restrict access to data(SELECT, INSERT, UPDATE and DELETE) in a table based on a user's identity or attributes. Benefit of this is to not let other user can see another user date by config on database level. And by default when you enable RLS,there will be no rule yet which make you can't access or do anything until set it up. To set it you just need to create a condition that you want and apply to all SELECT, INSERT, UPDATE and DELETE which will use same condition.
 
+`tailwind`
+
+- class `group` `group-hover`
+
 ## <a name="implementation-note">Implementation Notes</a>
 
 TODO
