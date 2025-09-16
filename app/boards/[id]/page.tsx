@@ -15,7 +15,7 @@ import { useState } from "react";
 
 const BoardPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { board, updateBoard } = useBoard(id);
+  const { board, columns, loading, error, updateBoard } = useBoard(id);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -153,6 +153,17 @@ const BoardPage = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      <main className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
+        <div className=" flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 space-y-4 sm:space-y-0">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            <div className="text-sm text-gray-600">
+              <span className="font-medium">Total Tasks: </span>
+              {columns.reduce((sum, col) => sum + col.tasks.length, 0)}
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

@@ -26,6 +26,10 @@ export interface Task {
   due_date: string | null;
   priority: "low" | "medium" | "high";
   sort_order: number;
-  column_id: number;
+  column_id: string;
   updated_at: string;
 }
+
+export type ColumnWithTasks = Column & {
+  tasks: Task[];
+};
