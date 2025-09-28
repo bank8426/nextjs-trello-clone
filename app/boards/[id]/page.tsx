@@ -63,7 +63,8 @@ const Column = ({
 
 const BoardPage = () => {
   const { id } = useParams<{ id: string }>();
-  const { board, columns, loading, error, updateBoard } = useBoard(id);
+  const { board, columns, loading, error, updateBoard, createRealTask } =
+    useBoard(id);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -94,7 +95,7 @@ const BoardPage = () => {
       throw new Error("No column available to add task");
     }
 
-    // await createRealTask(targetColumn.id, taskData);
+    await createRealTask(targetColumn.id, taskData);
   };
 
   const handleCreateTask = async (e: React.FormEvent) => {
@@ -111,6 +112,11 @@ const BoardPage = () => {
 
     if (taskData.title.trim()) {
       await createTask(taskData);
+
+      const trigger = document.querySelector(
+        '[data-state="open"]'
+      ) as HTMLElement;
+      if (trigger) trigger.click();
     }
   };
 
@@ -256,7 +262,7 @@ const BoardPage = () => {
                 <p className="text-sm text-gray-600">Add a task to the board</p>
               </DialogHeader>
 
-              <form className="space-y-4">
+              <form className="space-y-4" onSubmit={handleCreateTask}>
                 <div className="space-y-2">
                   <Label>Title *</Label>
                   <Input
@@ -323,6 +329,7 @@ const BoardPage = () => {
               onCreateTask={() => {}}
               onEditColumn={() => {}}
             >
+              {/* TODO update style */}
               <div>
                 {column.tasks.map((task, index) => (
                   <div key={index}>{task.title}</div>
