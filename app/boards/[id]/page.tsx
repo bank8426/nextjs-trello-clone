@@ -1,5 +1,6 @@
 "use client";
 import Navbar from "@/components/navbar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,9 +20,46 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useBoard } from "@/lib/hooks/useBoards";
-import { Plus } from "lucide-react";
+import { ColumnWithTasks } from "@/lib/supabase/models";
+import { MoreHorizontal, Plus } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+
+const Column = ({
+  column,
+  children,
+  onCreateTask,
+  onEditColumn,
+}: {
+  column: ColumnWithTasks;
+  children: React.ReactNode;
+  onCreateTask: (taskData: any) => Promise<void>;
+  onEditColumn: (column: ColumnWithTasks) => void;
+}) => {
+  return (
+    <div className="w-full lg:shrink-0 lg:w-80">
+      <div className="bg-white rounded-lg shadow-sm border">
+        <div className="p-3 sm:p-4 border-b">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2 min-w-0">
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                {column.title}
+              </h3>
+              <Badge variant="secondary" className="text-xs shrink-0">
+                {column.tasks.length}
+              </Badge>
+            </div>
+            <Button variant="ghost" size="sm" className="flex-shrink-0">
+              <MoreHorizontal />
+            </Button>
+          </div>
+        </div>
+
+        <div className="p-2">{children}</div>
+      </div>
+    </div>
+  );
+};
 
 const BoardPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,6 +81,39 @@ const BoardPage = () => {
       setIsEditingTitle(false);
     } catch (error) {}
   };
+
+  const createTask = async (taskData: {
+    title: string;
+    description?: string;
+    assignee?: string;
+    dueDate?: string;
+    priority: "low" | "medium" | "high";
+  }) => {
+    const targetColumn = columns[0];
+    if (!targetColumn) {
+      throw new Error("No column available to add task");
+    }
+
+    // await createRealTask(targetColumn.id, taskData);
+  };
+
+  const handleCreateTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+    const taskData = {
+      title: formData.get("title") as string,
+      description: (formData.get("description") as string) || undefined,
+      assignee: (formData.get("assignee") as string) || undefined,
+      dueDate: (formData.get("dueDate") as string) || undefined,
+      priority:
+        (formData.get("priority") as "low" | "medium" | "high") || "medium",
+    };
+
+    if (taskData.title.trim()) {
+      await createTask(taskData);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar
@@ -241,6 +312,24 @@ const BoardPage = () => {
               </form>
             </DialogContent>
           </Dialog>
+        </div>
+
+        {/* Board Column */}
+        <div>
+          {columns.map((column, index) => (
+            <Column
+              key={index}
+              column={column}
+              onCreateTask={() => {}}
+              onEditColumn={() => {}}
+            >
+              <div>
+                {column.tasks.map((task, index) => (
+                  <div key={index}>{task.title}</div>
+                ))}
+              </div>
+            </Column>
+          ))}
         </div>
       </main>
     </div>
