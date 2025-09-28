@@ -161,7 +161,7 @@ export const taskService = {
       .select(
         `
         *,
-        column!inner(board_id)
+        columns!inner(board_id)
         `
       )
       .eq("columns.board_id", boardId)

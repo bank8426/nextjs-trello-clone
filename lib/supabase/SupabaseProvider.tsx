@@ -16,6 +16,7 @@ const SupabaseProvider = ({ children }: { children: React.ReactNode }) => {
   const { session } = useSession();
   const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  // TODO when no `session`, app stuck with text "Loading ..." without redirect to signin screen
   useEffect(() => {
     if (!session) return;
 
@@ -30,6 +31,7 @@ const SupabaseProvider = ({ children }: { children: React.ReactNode }) => {
     setSupabase(client);
     setIsLoaded(true);
   }, [session]);
+
   return (
     <Context.Provider value={{ supabase, isLoaded }}>
       {!isLoaded ? <div>Loading ...</div> : children}
