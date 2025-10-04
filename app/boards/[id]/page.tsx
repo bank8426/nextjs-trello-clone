@@ -64,7 +64,11 @@ const DroppableColumn = ({
       }`}
       ref={setNodeRef}
     >
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div
+        className={`bg-white rounded-lg shadow-sm border ${
+          isOver ? "ring-2 ring-blue-300" : ""
+        }`}
+      >
         <div className="p-3 sm:p-4 border-b">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2 min-w-0">
@@ -417,6 +421,8 @@ const BoardPage = () => {
     const taskId = active.id as string;
     const overId = over.id as string;
     const targetColumn = columns.find((col) => col.id === overId);
+
+    // drag to another column
     if (targetColumn) {
       const sourceColumn = columns.find((col) =>
         col.tasks.some((task) => task.id === taskId)
@@ -425,7 +431,29 @@ const BoardPage = () => {
       if (sourceColumn && sourceColumn.id !== targetColumn.id) {
         await moveTask(taskId, targetColumn.id, targetColumn.tasks.length);
       }
-    } else {
+    }
+    // drag reorder task in same column
+    else {
+      const sourceColumn = columns.find((col) =>
+        col.tasks.some((task) => task.id === taskId)
+      );
+
+      const targetColumn = columns.find((col) =>
+        col.tasks.some((task) => task.id === overId)
+      );
+
+      if (sourceColumn && targetColumn) {
+        const oldTaskIndex = sourceColumn.tasks.findIndex(
+          (task) => task.id === taskId
+        );
+        const newTaskIndex = targetColumn.tasks.findIndex(
+          (task) => task.id === overId
+        );
+
+        if (oldTaskIndex !== newTaskIndex) {
+          await moveTask(taskId, targetColumn.id, newTaskIndex);
+        }
+      }
     }
   };
 
