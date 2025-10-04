@@ -206,6 +206,31 @@ export function useBoard(boardId: string) {
       );
     }
   };
+
+  const updateColumn = async (columnId: string, title: string) => {
+    if (!board || !user) throw new Error("Board not loaded");
+
+    try {
+      const updatedColumn = await columnService.updateColumnTitle(
+        supabase!,
+        columnId,
+        title
+      );
+
+      setColumns((prev) =>
+        prev.map((col) =>
+          col.id === columnId ? { ...col, ...updatedColumn } : col
+        )
+      );
+      return updatedColumn;
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to update column title."
+      );
+    }
+  };
   return {
     board,
     columns,
@@ -216,5 +241,6 @@ export function useBoard(boardId: string) {
     setColumns,
     moveTask,
     createColumn,
+    updateColumn,
   };
 }
