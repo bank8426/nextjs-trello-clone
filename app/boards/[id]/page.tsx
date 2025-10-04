@@ -318,6 +318,11 @@ const BoardPage = () => {
   const [editingColumn, setEditingColumn] = useState<ColumnWithTasks | null>(
     null
   );
+  const [filters, setFilters] = useState({
+    priority: [] as string[],
+    assignee: [] as string[],
+    dueDate: null as string | null,
+  });
 
   const [newTitle, setNewTitle] = useState("");
   const [newColor, setNewColor] = useState("");
@@ -329,6 +334,20 @@ const BoardPage = () => {
       },
     })
   );
+  const handleFilterChange = (
+    type: "priority" | "assignee" | "dueDate",
+    value: string | string[] | null
+  ) => {
+    setFilters((prev) => ({ ...prev, [type]: value }));
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      priority: [] as string[],
+      assignee: [] as string[],
+      dueDate: null as string | null,
+    });
+  };
   const handleUpdateBoard = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -501,6 +520,26 @@ const BoardPage = () => {
     setEditingColumnTitle(column.title);
   };
 
+  const filteredColumns = columns.map((column) => ({
+    ...column,
+    tasks: column.tasks.filter((task) => {
+      // filter by priority when select some filter
+      if (
+        filters.priority.length > 0 &&
+        !filters.priority.includes(task.priority)
+      )
+        return false;
+
+      //  filter by due date
+      if (filters.dueDate && task.due_date) {
+        const taskDate = new Date(task.due_date).toDateString();
+        const filterDate = new Date(filters.dueDate).toDateString();
+        if (taskDate !== filterDate) return false;
+      }
+      return true;
+    }),
+  }));
+
   return (
     <>
       <div className="min-h-screen bg-gray-50">
@@ -512,7 +551,11 @@ const BoardPage = () => {
             setIsEditingTitle(true);
           }}
           onFilterClick={() => setIsFilterOpen(true)}
-          filterCount={2}
+          filterCount={Object.values(filters).reduce(
+            (count, v) =>
+              count + (Array.isArray(v) ? v.length : v !== null ? 1 : 0),
+            0
+          )}
         />
 
         <Dialog open={isEditingTitle} onOpenChange={setIsEditingTitle}>
@@ -590,13 +633,32 @@ const BoardPage = () => {
                 <Label>Priority</Label>
                 <div className="flex flex-wrap gap-2">
                   {["low", "medium", "high"].map((priority, index) => (
-                    <Button key={index} variant="outline" size="sm">
+                    <Button
+                      key={index}
+                      variant={
+                        filters.priority.includes(priority)
+                          ? "default"
+                          : "outline"
+                      }
+                      size="sm"
+                      onClick={() => {
+                        const newPriorities = filters.priority.includes(
+                          priority
+                        )
+                          ? filters.priority.filter((p) => p !== priority)
+                          : [...filters.priority, priority];
+
+                        handleFilterChange("priority", newPriorities);
+                      }}
+                    >
                       {priority.charAt(0).toUpperCase() + priority.slice(1)}
                     </Button>
                   ))}
                 </div>
               </div>
-              {/* <div className="space-y-2">
+              {/*
+              TODO Filter by assignee
+              <div className="space-y-2">
               <Label>Assignee</Label>
               <div className="flex flex-wrap gap-2">
                 {["low", "medium", "high"].map((priority, index) => (
@@ -608,11 +670,17 @@ const BoardPage = () => {
             </div> */}
               <div className="space-y-2">
                 <Label>Due Date</Label>
-                <Input type="date" />
+                <Input
+                  type="date"
+                  value={filters.dueDate || ""}
+                  onChange={(e) =>
+                    handleFilterChange("dueDate", e.target.value || null)
+                  }
+                />
               </div>
 
               <div className="flex justify-between pt-4">
-                <Button type="button" variant="outline">
+                <Button type="button" variant="outline" onClick={clearFilters}>
                   Clear Filters
                 </Button>
                 <Button type="button" onClick={() => setIsFilterOpen(false)}>
@@ -718,7 +786,7 @@ const BoardPage = () => {
         lg:[&::-webkit-scrollbar]:h-2 lg:[&::-webkit-scrollbar-track]:bg-gray-100
         lg:[&::-webkit-scrollbar-thumb]:bg-gray-300 lg:[&::-webkit-scrollbar-thumb]:rounded-full space-y-4 lg:space-y-0"
             >
-              {columns.map((column, index) => (
+              {filteredColumns.map((column, index) => (
                 <DroppableColumn
                   key={index}
                   column={column}

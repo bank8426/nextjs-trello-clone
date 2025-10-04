@@ -204,3 +204,8 @@ TODO
 Clerk & Supabase integration
 RLS
 (auth.uid())::text) and requesting_user_id()
+
+TODO
+Missing Feature
+
+- filter by assignee
