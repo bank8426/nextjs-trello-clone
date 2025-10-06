@@ -205,7 +205,24 @@ Clerk & Supabase integration
 RLS
 (auth.uid())::text) and requesting_user_id()
 
+APP
+App stuck at Loading when session expired without display navbar bacuase not handle sesion well in SupabaseProvider.tsx
+https://clerk.com/docs/nextjs/reference/hooks/use-session
+
+```js
+    const { isLoaded: isSessionLoaded, session } = useSession();
+    ...
+    useEffect(() => {
+      // when still loading session
+      if (!isSessionLoaded && !session) {
+        return;
+      }
+      ... // the rest of code
+    }, [isSessionLoaded, session]);
+```
+
+## <a name="missing">Missing Features</a>
+
 TODO
-Missing Feature
 
 - filter by assignee
