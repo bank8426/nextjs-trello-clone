@@ -225,4 +225,7 @@ https://clerk.com/docs/nextjs/reference/hooks/use-session
 
 TODO
 
-- filter by assignee
+- Board page
+  - filter by assignee
+- Dashboard page
+  - filter boards by task count
