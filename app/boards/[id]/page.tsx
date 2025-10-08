@@ -456,7 +456,7 @@ const BoardPage = () => {
     const overId = over.id as string;
     const targetColumn = columns.find((col) => col.id === overId);
 
-    // drag to another column
+    // drag to another column , auto put last sort_order
     if (targetColumn) {
       const sourceColumn = columns.find((col) =>
         col.tasks.some((task) => task.id === taskId)
@@ -469,7 +469,7 @@ const BoardPage = () => {
         await moveTask(taskId, targetColumn.id, targetColumn.tasks.length);
       }
     }
-    // TODO incorrect reorder, can't reorder to be first task
+    // TODO incorrect reorder, when multiple task it not update sort_order of other
     // drag reorder task in same column
     else {
       const sourceColumn = columns.find((col) =>

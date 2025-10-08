@@ -164,19 +164,40 @@ export function useBoard(boardId: string) {
         const newColumns = [...prev];
 
         let taskToMove: Task | null = null;
+        // get specific task
         for (const col of newColumns) {
           const taskIndex = col.tasks.findIndex((task) => task.id === taskId);
           if (taskIndex !== -1) {
             taskToMove = col.tasks[taskIndex];
+            taskToMove.column_id = newColumnId;
+            taskToMove.sort_order = newOrder;
             col.tasks.splice(taskIndex, 1);
             break;
           }
         }
 
+        // move to target column
         if (taskToMove) {
           const targetColumn = newColumns.find((col) => col.id === newColumnId);
+
+          // move task to specific sort_order
           if (targetColumn) {
             targetColumn.tasks.splice(newOrder, 0, taskToMove);
+
+            // adjust sort_order of all tasks after specific task
+            targetColumn.tasks.forEach(async (task, index) => {
+              if (task.id !== taskId && task.sort_order !== index) {
+                console.log(task.title, index);
+
+                task.sort_order = index;
+                await taskService.moveTask(
+                  supabase!,
+                  task.id,
+                  newColumnId,
+                  index
+                );
+              }
+            });
           }
         }
 
