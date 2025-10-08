@@ -39,7 +39,7 @@ export default function DashboardPage() {
   const { user } = useUser();
   const { createBoard, boards, loading, error } = useBoards();
   const router = useRouter();
-  const { isFreeUser } = usePlan();
+  const { isFreeUser, hasProPlan, hasEnterprisePlan } = usePlan();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
   const [filters, setFilters] = useState({
@@ -56,8 +56,10 @@ export default function DashboardPage() {
 
   const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false);
 
-  // TODO handle board limit based on plan
-  const canCreateBoard = !isFreeUser || boards.length < 3;
+  const canCreateBoard =
+    hasEnterprisePlan ||
+    (hasProPlan && boards.length < 30) ||
+    (isFreeUser && boards.length < 3);
 
   const boardsWithTaskCount = boards.map((board: Board) => ({
     ...board,
@@ -205,10 +207,14 @@ export default function DashboardPage() {
                 Your Boards
               </h2>
               <p className="text-gray-600">Manage your projects and tasks</p>
-              {/* TODO display board limit based on plan */}
               {isFreeUser && (
                 <p className="text-sm text-gray-500 mt-1">
                   Free plan: {boards.length}/3 boards used
+                </p>
+              )}
+              {hasProPlan && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Pro plan: {boards.length}/30 boards used
                 </p>
               )}
             </div>
@@ -475,9 +481,12 @@ export default function DashboardPage() {
           <DialogHeader>
             <DialogTitle>Upgrade to Create More Boards</DialogTitle>
             <p className="text-sm text-gray-600">
-              {/* TODO display board limit based on plan */}
-              Free users can only create one board. Upgrade to Pro or Enterprise
-              to create more boards.
+              {isFreeUser &&
+                `Free users can only create 3 boards. Upgrade to Pro or Enterprise
+              to create more boards.`}
+              {hasProPlan &&
+                `Pro users can only create 30 boards. Upgrade to Enterprise
+              to create more boards.`}
             </p>
           </DialogHeader>
           <div className="space-y-4">
