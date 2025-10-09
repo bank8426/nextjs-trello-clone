@@ -109,6 +109,7 @@ const DroppableColumn = ({
                 <p className="text-sm text-gray-600">Add a task to the board</p>
               </DialogHeader>
 
+              {/* TODO make it create task on specific column */}
               <form className="space-y-4" onSubmit={onCreateTask}>
                 <div className="space-y-2">
                   <Label>Title *</Label>
@@ -409,59 +410,19 @@ const BoardPage = () => {
       setActiveTask(task);
     }
   };
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    if (!over) return;
-    const activeId = active.id as string;
-    const overId = over.id as string;
-
-    const sourceColumn = columns.find((col) =>
-      col.tasks.some((task) => task.id === activeId)
-    );
-
-    const targetColumn = columns.find((col) =>
-      col.tasks.some((task) => task.id === overId)
-    );
-
-    if (!sourceColumn || !targetColumn) return;
-
-    if (sourceColumn.id === targetColumn.id) {
-      const activeTaskIndex = sourceColumn.tasks.findIndex(
-        (task) => task.id === activeId
-      );
-      const overTaskIndex = targetColumn.tasks.findIndex(
-        (task) => task.id === overId
-      );
-
-      if (activeTaskIndex !== overTaskIndex) {
-        setColumns((prev: ColumnWithTasks[]) => {
-          const newColumn = [...prev];
-          const column = newColumn.find((col) => col.id === sourceColumn.id);
-          if (column) {
-            const tasks = [...column.tasks];
-            const [removed] = tasks.splice(activeTaskIndex, 1);
-            tasks.splice(overTaskIndex, 0, removed);
-            column.tasks = tasks;
-          }
-
-          return newColumn;
-        });
-      }
-    }
-  };
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return;
     const taskId = active.id as string;
     const overId = over.id as string;
+
+    const sourceColumn = columns.find((col) =>
+      col.tasks.some((task) => task.id === taskId)
+    );
     const targetColumn = columns.find((col) => col.id === overId);
 
     // drag to another column , auto put last sort_order
     if (targetColumn) {
-      const sourceColumn = columns.find((col) =>
-        col.tasks.some((task) => task.id === taskId)
-      );
-
       if (sourceColumn && sourceColumn.id !== targetColumn.id) {
         console.log("change column");
         console.log(taskId, targetColumn.id, targetColumn.tasks.length);
@@ -472,10 +433,6 @@ const BoardPage = () => {
     // TODO incorrect reorder, when multiple task it not update sort_order of other
     // drag reorder task in same column
     else {
-      const sourceColumn = columns.find((col) =>
-        col.tasks.some((task) => task.id === taskId)
-      );
-
       const targetColumn = columns.find((col) =>
         col.tasks.some((task) => task.id === overId)
       );
@@ -496,6 +453,7 @@ const BoardPage = () => {
         }
       }
     }
+    setActiveTask(null);
   };
 
   const handleCreateColumn = async (e: React.FormEvent) => {
@@ -785,7 +743,6 @@ const BoardPage = () => {
             sensors={sersors}
             collisionDetection={rectIntersection}
             onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
           >
             <div

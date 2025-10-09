@@ -232,3 +232,8 @@ TODO
   - filter by assignee
 - Dashboard page
   - filter boards by task count
+
+## <a name="Known Bugs">Known Bugs</a>
+
+- Reordering Tasks result in move Task to another Column
+  - This happened when drag and drop one task over another task that has `id` matched with `Task id` and also `Column id` of different Column. When `handleDragEnd` is executed, The code inside of `handleDragEnd` will consider this action as `move task to another column` since it matched the first condition of `if-else` which check if `over.id is matched with column.id` which give unintended result. But this can't fix by rearrange `if-else` condition. Root cause is from when we setup `table` in `db` because we use `number` as `id` which mean it is `not unique` and `can be miss use` for `id` in `other table` that also use `number` as `id`. I try try to migrate type of `id` to `uuid` but it not allowed even clean up all data.
