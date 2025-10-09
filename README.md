@@ -236,4 +236,10 @@ TODO
 ## <a name="Known Bugs">Known Bugs</a>
 
 - Reordering Tasks result in move Task to another Column
-  - This happened when drag and drop one task over another task that has `id` matched with `Task id` and also `Column id` of different Column. When `handleDragEnd` is executed, The code inside of `handleDragEnd` will consider this action as `move task to another column` since it matched the first condition of `if-else` which check if `over.id is matched with column.id` which give unintended result. But this can't fix by rearrange `if-else` condition. Root cause is from when we setup `table` in `db` because we use `number` as `id` which mean it is `not unique` and `can be miss use` for `id` in `other table` that also use `number` as `id`. I try try to migrate type of `id` to `uuid` but it not allowed even clean up all data.
+
+  - This happened when drag and drop one task over another task that has `id` matched with `Task id` and also `Column id` of different Column. When `handleDragEnd` is executed, The code inside of `handleDragEnd` will consider this action as `move task to another column` since it matched the first condition of `if-else` which check if `over.id is matched with column.id` which give unintended result. But this can't fix by rearrange `if-else` condition.
+
+  - Root cause
+    - When we setup `table` in `db`, we use `number` as `id` which mean it is `not unique` and `can be miss use` for `id` in `other table` which use `number` as `id` as well. I try try to migrate type of `id` to `uuid` but `db` not allowed even clean up all data.
+  - Workaround
+    - I give `DroppableColumn` component different `id` ("column\_`${column.id}`") instead and make `handleDragEnd` to check column based on new id format that we assigned instead.

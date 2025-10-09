@@ -56,7 +56,7 @@ const DroppableColumn = ({
   onCreateTask: (taskData: any) => Promise<void>;
   onEditColumn: (column: ColumnWithTasks) => void;
 }) => {
-  const { setNodeRef, isOver } = useDroppable({ id: column.id });
+  const { setNodeRef, isOver } = useDroppable({ id: `column_${column.id}` });
   return (
     <div
       className={`w-full lg:shrink-0 lg:w-80 ${
@@ -414,14 +414,19 @@ const BoardPage = () => {
     const { active, over } = event;
     if (!over) return;
     const taskId = active.id as string;
-    const overId = over.id as string;
+    const overId = over.id.toString();
+    const overColumnId = overId.includes("column_")
+      ? overId.split("column_")[1]
+      : null;
 
     const sourceColumn = columns.find((col) =>
       col.tasks.some((task) => task.id === taskId)
     );
-    const targetColumn = columns.find((col) => col.id === overId);
+    const targetColumn = columns.find(
+      (col) => col.id.toString() === overColumnId
+    );
 
-    // drag to another column , auto put last sort_order
+    // drag over another column, auto put task in last sort_order
     if (targetColumn) {
       if (sourceColumn && sourceColumn.id !== targetColumn.id) {
         console.log("change column");
@@ -430,7 +435,6 @@ const BoardPage = () => {
         await moveTask(taskId, targetColumn.id, targetColumn.tasks.length);
       }
     }
-    // TODO incorrect reorder, when multiple task it not update sort_order of other
     // drag reorder task in same column
     else {
       const targetColumn = columns.find((col) =>
