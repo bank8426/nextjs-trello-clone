@@ -12,6 +12,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -19,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { usePlan } from "@/lib/contexts/planContext";
 import { useBoards } from "@/lib/hooks/useBoards";
-import { Board } from "@/lib/supabase/models";
+import { Board, BoardWithTaskCount } from "@/lib/supabase/models";
 import { useUser } from "@clerk/nextjs";
 import {
   Filter,
@@ -61,25 +62,29 @@ export default function DashboardPage() {
     (hasProPlan && boards.length < 30) ||
     (isFreeUser && boards.length < 3);
 
-  const boardsWithTaskCount = boards.map((board: Board) => ({
+  const boardsWithTaskCount = boards.map((board: BoardWithTaskCount) => ({
     ...board,
-    // TODO calculate task count
-    taskCount: 0,
   }));
 
-  const filterBoards = boardsWithTaskCount.filter((board: Board) => {
-    const matchesSeach = board.title
-      .toLowerCase()
-      .includes(filters.search.toLowerCase());
+  const filterBoards = boardsWithTaskCount.filter(
+    (board: BoardWithTaskCount) => {
+      const matchesSeach = board.title
+        .toLowerCase()
+        .includes(filters.search.toLowerCase());
 
-    const matchesDateRange =
-      (!filters.dateRange.start ||
-        new Date(board.created_at) >= new Date(filters.dateRange.start)) &&
-      (!filters.dateRange.end ||
-        new Date(board.created_at) <= new Date(filters.dateRange.end));
+      const matchesDateRange =
+        (!filters.dateRange.start ||
+          new Date(board.created_at) >= new Date(filters.dateRange.start)) &&
+        (!filters.dateRange.end ||
+          new Date(board.created_at) <= new Date(filters.dateRange.end));
 
-    return matchesSeach && matchesDateRange;
-  });
+      const matchesTaskCount =
+        (!filters.taskCount.min || board.taskCount >= filters.taskCount.min) &&
+        (!filters.taskCount.max || board.taskCount <= filters.taskCount.max);
+
+      return matchesSeach && matchesDateRange && matchesTaskCount;
+    }
+  );
 
   const clearFilters = () => {
     setFilters({
@@ -298,6 +303,9 @@ export default function DashboardPage() {
                           {new Date(board.updated_at).toLocaleDateString()}
                         </span>
                       </div>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500 space-y-1 sm:space-y-0">
+                        <span>Total Task : {board.taskCount || 0}</span>
+                      </div>
                     </CardContent>
                   </Card>
                 </Link>
@@ -373,9 +381,9 @@ export default function DashboardPage() {
         <DialogContent className="w-[95vw] max-w-[425px] mx-auto">
           <DialogHeader>
             <DialogTitle>Filter Boards</DialogTitle>
-            <p className="text-sm text-gray-600">
+            <DialogDescription className="text-sm text-gray-600">
               Filter boards by title, date, or task count.
-            </p>
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -386,6 +394,7 @@ export default function DashboardPage() {
                 onChange={(e) =>
                   setFilters((prev) => ({ ...prev, search: e.target.value }))
                 }
+                value={filters.search}
               />
             </div>
 
@@ -405,6 +414,7 @@ export default function DashboardPage() {
                         },
                       }))
                     }
+                    value={filters.dateRange.start || ""}
                   />
                 </div>
                 <div>
@@ -420,6 +430,7 @@ export default function DashboardPage() {
                         },
                       }))
                     }
+                    value={filters.dateRange.end || ""}
                   />
                 </div>
               </div>
@@ -442,6 +453,7 @@ export default function DashboardPage() {
                         },
                       }))
                     }
+                    value={filters.taskCount.min || ""}
                   />
                 </div>
                 <div>
@@ -459,6 +471,7 @@ export default function DashboardPage() {
                         },
                       }))
                     }
+                    value={filters.taskCount.max || ""}
                   />
                 </div>
               </div>
@@ -480,14 +493,14 @@ export default function DashboardPage() {
         <DialogContent className="w-[95vw] max-w-[425px] mx-auto">
           <DialogHeader>
             <DialogTitle>Upgrade to Create More Boards</DialogTitle>
-            <p className="text-sm text-gray-600">
+            <DialogDescription className="text-sm text-gray-600">
               {isFreeUser &&
                 `Free users can only create 3 boards. Upgrade to Pro or Enterprise
               to create more boards.`}
               {hasProPlan &&
                 `Pro users can only create 30 boards. Upgrade to Enterprise
               to create more boards.`}
-            </p>
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="flex justify-end pt-4 space-x-4">

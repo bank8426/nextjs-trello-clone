@@ -33,3 +33,7 @@ export interface Task {
 export type ColumnWithTasks = Column & {
   tasks: Task[];
 };
+
+export type BoardWithTaskCount = Board & {
+  taskCount: number;
+};

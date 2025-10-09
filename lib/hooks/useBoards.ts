@@ -7,13 +7,19 @@ import {
   taskService,
 } from "../services";
 import { useEffect, useState } from "react";
-import { Board, Column, ColumnWithTasks, Task } from "../supabase/models";
+import {
+  Board,
+  BoardWithTaskCount,
+  Column,
+  ColumnWithTasks,
+  Task,
+} from "../supabase/models";
 import { useSupabase } from "../supabase/SupabaseProvider";
 
 export function useBoards() {
   const { user } = useUser();
   const { supabase } = useSupabase();
-  const [boards, setBoards] = useState<Board[]>([]);
+  const [boards, setBoards] = useState<BoardWithTaskCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
