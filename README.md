@@ -9,18 +9,24 @@
 3. [Demo](#demo)
 4. [Tech Stack](#tech-stack)
 5. [Features](#features)
-6. [Quick Start](#quick-start)
-7. [What I learned](#learn)
-8. [Implementation Notes](#implementation-notes)
+6. [Additional Feature](#additional)
+7. [Quick Start](#quick-start)
+8. [What I learned](#learn)
+9. [Implementation Notes](#implementation-notes)
+10. [Missing Features](#missing)
+11. [Known Bugs](#bugs)
 
 ## <a name="introduction">Introduction</a>
 
-TODO
+Trello‑Style App using Next.js, Supabase, Clerk, dnd‑kit, and TailwindCSS with authentication & billing, drag‑and‑drop, and filtering.
 
 ## <a name="note">⚠️ Note</a>
 
-TODO
-This project was implemented based on a tutorial video on YouTube from freeCodeCamp [Build a Fullstack Trello App with NextJS 15, Supabase, TailwindCSS, Drag & Drop](https://www.youtube.com/watch?v=ugxI1o5SyMs).
+This project was implemented based on a tutorial video on YouTube from PedroTech [Build a Fullstack Trello App with NextJS 15, Supabase, TailwindCSS, Drag & Drop](https://www.youtube.com/watch?v=ugxI1o5SyMs).
+
+Good project idea, tech stack, folder structure, and UI design. This project also teaches you how to create a `Custom React Hook` and a `Custom React Context`, which I think is very useful. But for code inside `page.tsx`, it has a long code. It is better to separate it into different components, but I also left it as it is to make it easier to follow the tutorial (e.g., the Board page got 942 lines of code, the Dashboard page got 567 lines of code after I added more features).
+
+Not all features were implemented in the tutorial video. The drag and drop functionality is not well handled, so it is not working as expected. However, I managed to add those features, improve some UX/UI, and fix the issues as I could think of.
 
 ## <a name="demo">Demo</a>
 
@@ -83,48 +89,9 @@ Click on each section to toggle the demo image.
   </div>
 </details>
 
-<details>
-  <summary>
-    Non-Authenticated User
-  </summary>
-  <div>
-    <b>See Public profile from Profile's Link</b>
-    <div>
-      <a href="">
-        <img src="public/readme/public-profile.gif" alt="Public profile" />
-      </a>
-    </div>
-    <b>Booking Event from Event's link</b>
-    <div>
-      <a href="">
-        <img src="public/readme/see-and-book-event.gif" alt="See and book event" />
-      </a>
-    </div>
-    <b>Invitation Email</b>
-    <div>
-      <a href="">
-        <img src="public/readme/invitation-email.png" alt="Invitation Email" />
-      </a>
-    </div>
-    <b>Google Calendar after accept invitation</b>
-    <div>
-      <a href="">
-        <img src="public/readme/after-book-event.png" alt="See and book event" />
-      </a>
-    </div>
-    <b>Available time slot will be updated according to events in Google Calendar</b>
-    <div>
-      <a href="">
-        <img src="public/readme/google-calendar.png" alt="Google Calendar" />
-      </a>
-    </div>
-  </div>
-</details>
 -->
 
 ## <a name="tech-stack">Tech Stack</a>
-
-TODO
 
 - Next.js - React framework for full-stack web application development
 - React - JavaScript library
@@ -133,18 +100,35 @@ TODO
 - Clerk - Authentication & subscription billing integration Middleware with pre-built UI components and themes
 - Tailwind CSS v4 - CSS framework
 - Shadcn UI - UI component library using primitives from Radix UI
-- @dnd-kit – Primitives, Hook and functionality for create Drag‑and‑drop UI (I used `@dnd-kit/core`, `@dnd-kit/sortable` and `@dnd-kit/utilities`) TODO
+- @dnd-kit – Primitives, Hook and functionality for create Drag‑and‑drop UI (I used `@dnd-kit/core`, `@dnd-kit/sortable` and `@dnd-kit/utilities`)
 - Lucide React - Icon library for React
-- Class Variance Authority - TODO
 - tw-animate-css - Collection of utility classes for Tailwind CSS animations
 
 ## <a name="features">Features</a>
 
-TODO
+- Create multiple boards
+- Define custom columns.
+- Add new tasks with title, description, assignee, priority & due date.
+- Reorder tasks and move them between columns by drag and drop with smooth animations.
+- Filterable boards with title, date range.
+- Filterable tasks with priority, due date.
+- Sign up / log in with Clerk and upgrade your plan to create unlimited boards.
+
+## <a name="additional">Additional Feature</a>
+
+- Dashboard page
+  - Filter
+    - Display filter count
+    - Filter board by task count
+    - Dashboard
+- Board page
+  - Filter
+    - Display color for each priority
+    - Create a task on each column instead of defaulting to the first column
+    - Filter task by assignee
 
 ## <a name="quick-start">Quick Start</a>
 
-TODO
 Follow these steps to set up the project locally on your machine.
 
 ### Prerequisites
@@ -156,8 +140,8 @@ Follow these steps to set up the project locally on your machine.
 ### Cloning the Repository
 
 ```bash
-git clone https://github.com/bank8426/calendly-clone-next.git
-cd calendly-clone-next
+git clone https://github.com/bank8426/nextjs-trello-clone.git
+cd nextjs-trello-clone
 ```
 
 ### Installation
@@ -174,7 +158,13 @@ npm install
 2. Replace the placeholder values with your actual credentials
 
 ```env
+# https://dashboard.clerk.com/ - create a new app and take API keys
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 
+# https://supabase.com/dashboard - create a new project and take the Project API keys
+NEXT_PUBLIC_SUPERBASE_URL=
+NEXT_PUBLIC_SUPERBASE_ANON_KEY=
 ```
 
 ### Running the Project
@@ -191,28 +181,65 @@ TODO
 
 `Supabase`
 
-- Supabase, Row Level Security (RLS) policies are `PostgreSQL rules` to restrict access to data(SELECT, INSERT, UPDATE and DELETE) in a table based on a user's identity or attributes. Benefit of this is to not let other user can see another user date by config on database level. And by default when you enable RLS,there will be no rule yet which make you can't access or do anything until set it up. To set it you just need to create a condition that you want and apply to all SELECT, INSERT, UPDATE and DELETE which will use same condition.
+- Supabase, Row Level Security (RLS) policies are `PostgreSQL rules` to restrict access to data(SELECT, INSERT, UPDATE, and DELETE) in a table based on a user's identity or attributes. The benefit of this is to prevent other users from seeing another user's data by configuring on the database level. And by default, when you enable RLS, there will be no rule yet. So that prevents you from accessing or doing anything until you set it up. To set it, you just need to create a condition that you want and apply it to all SELECT, INSERT, UPDATE, and DELETE which will use the same condition.
 
 `tailwind`
 
 - class `group` `group-hover`
 
 - React
-- Create custom context, provider , hook
+- Create custom context, provider, hook
 
 ## <a name="implementation-note">Implementation Notes</a>
 
-TODO
+- Clerk & Supabase integration (See more in [Clerk & Supabase](https://supabase.com/partners/integrations/clerk))
 
-Clerk & Supabase integration
-RLS
-(auth.uid())::text) and requesting_user_id()
+  - Get `user id` in RLS policies
 
-APP
-App stuck at Loading when session expired without display navbar bacuase not handle sesion well in SupabaseProvider.tsx
-https://clerk.com/docs/nextjs/reference/hooks/use-session
+    - `Clerk` authentication with `Supabase` database, `requesting_user_id()`(function we need to create based on clerk doc) will return `user id` from `clerk`
 
-```js
+    ```sql
+    with check (
+      (requesting_user_id() = user_id)
+    )
+    ```
+
+    - `Supabase` authentication with `Supabase` database, `auth.uid()` will return `user id` from `supabase`
+
+    ```sql
+    with check (
+      ((auth.uid())::text = user_id)
+    )
+    ```
+
+- APP
+
+  - App stuck at `Loading...` forever when the `session` expired
+    - This happens because we did not handle `session` well enough in `SupabaseProvider.tsx`. In the tutorial, we check only if `session` is `undefined`, then we call `return` and wait until `session` is available. But if the user is not signed in or the `session` has expired, the `session` will still be `undefined` and stuck at that state forever. So I add `isLoaded`, which comes from `useSession` in `@clerk/nextjs`, to check the loading state of `session`. If `session` is loaded successfully so we can continue to create a `supabase` client without `session`. Other than `isLoaded`, `useSession` also has `isSignedIn` to check if the user is signed in or not. (See [useSession](https://clerk.com/docs/nextjs/reference/hooks/use-session) for more details.)
+
+  ```js
+    const { session } = useSession();
+    ...
+    useEffect(() => {
+      // when the session is not available
+      if (!session) {
+        return;
+      }
+
+      const client = createClient(
+      process.env.NEXT_PUBLIC_SUPERBASE_URL!,
+      process.env.NEXT_PUBLIC_SUPERBASE_ANON_KEY!,
+      {
+        accessToken: async () => session?.getToken() ?? null,
+      }
+    );
+
+    setSupabase(client);
+    setIsLoaded(true);
+    }, [session]);
+  ```
+
+  ```js
     const { isLoaded: isSessionLoaded, session } = useSession();
     ...
     useEffect(() => {
@@ -220,42 +247,30 @@ https://clerk.com/docs/nextjs/reference/hooks/use-session
       if (!isSessionLoaded && !session) {
         return;
       }
-      ... // the rest of code
+      ... // the rest of the code
     }, [isSessionLoaded, session]);
-```
+  ```
 
-- Shadcn Select component (Select dropdown)
-  - I try to allow user to select column when create task by adding new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string` which make component not work correctly when use with `column.id` which is `number`. So dropdown list value will disappear after i select item inside. So i need to parse `column.id` to `string` first before using it in component and then everything work fine.
+- Shadcn
+  - Select component (Select dropdown)
+    - I try to allow the user to be able to select a column when creating a task by adding a new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string`, which makes the component not work correctly when used with `column.id`, which is `number`. So the dropdown list value will disappear after I select an item inside. So I need to parse `column.id` to `string` first before using it in the component, and then everything works fine.
 
 ## <a name="missing">Missing Features</a>
 
-Feature that i think it should have
-Board Page
+A feature that I think it should have
 
-- Delete Board
-- Reorder column
-- Edit/Delete task
+- Board Page
+  - Delete Board
+  - Reorder column
+  - Edit/Delete task
 
-## <a name="Known Bugs">Known Bugs</a>
+## <a name="bugs">Known Bugs</a>
 
-- Reordering Tasks result in move Task to another Column
+- Reordering Tasks results in moving the Task to another Column
 
-  - This happened when drag and drop one task over another task that has `id` matched with `Task id` and also `Column id` of different Column. When `handleDragEnd` is executed, The code inside of `handleDragEnd` will consider this action as `move task to another column` since it matched the first condition of `if-else` which check if `over.id is matched with column.id` which give unintended result. But this can't fix by rearrange `if-else` condition.
+  - This happened when dragging and dropping one task over another task that has `id` matched with `Task id` and also `Column id` of a different Column. When `handleDragEnd` is executed, the code inside `handleDragEnd` will consider this action as `move task to another column` since it matched the first condition of `if-else`, which checks if `over.id is matched with column.id`, which gives an unintended result. But this can't be fixed by rearranging the `if-else` condition.
 
   - Root cause
-    - When we setup `table` in `db`, we use `number` as `id` which mean it is `not unique` and `can be miss use` for `id` in `other table` which use `number` as `id` as well. I try try to migrate type of `id` to `uuid` but `db` not allowed even clean up all data.
+    - When we set up `table` in `db`, we use `number` as `id`, which means it is `not unique` and `can be misused` for `id` in `other table` which uses `number` as `id` as well. I try to migrate the type of `id` to `uuid`, but `db` is not allowed, even after cleaning up all data.
   - Workaround
-    - I give `DroppableColumn` component different `id` ("column\_`${column.id}`") instead and make `handleDragEnd` to check column based on new id format that we assigned instead.
-
-## <a name="Additional">Additional Feature</a>
-
-- Dashboard page
-  - Filter
-    - Display filter count
-    - Filter board by task count
-    - Dashboard
-- Board page
-  - Filter
-    - Display color for each priority
-    - Create task on each column instead of default to first column
-    - Filter task by assignee
+    - I give `DroppableColumn` component a different `id` ("column\_`${column.id}`") instead, and make `handleDragEnd` to check column based on the new id format that we assigned instead.

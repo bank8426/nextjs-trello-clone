@@ -111,7 +111,6 @@ const DroppableColumn = ({
                 <p className="text-sm text-gray-600">Add a task to the board</p>
               </DialogHeader>
 
-              {/* TODO make it create task on specific column */}
               <form className="space-y-4" onSubmit={onCreateTask}>
                 <div className="space-y-2">
                   <Label>Title *</Label>
