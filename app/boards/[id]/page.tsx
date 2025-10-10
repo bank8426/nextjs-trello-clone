@@ -302,6 +302,7 @@ const BoardPage = () => {
   const {
     board,
     columns,
+    availableAssignees,
     loading,
     error,
     updateBoard,
@@ -500,6 +501,13 @@ const BoardPage = () => {
       )
         return false;
 
+      // filter by assign when select some filter
+      if (
+        filters.assignee.length > 0 &&
+        !filters.assignee.includes(task.assignee!)
+      )
+        return false;
+
       //  filter by due date
       if (filters.dueDate && task.due_date) {
         const taskDate = new Date(task.due_date).toDateString();
@@ -631,18 +639,32 @@ const BoardPage = () => {
                   ))}
                 </div>
               </div>
-              {/*
-              TODO Filter by assignee
+
               <div className="space-y-2">
-              <Label>Assignee</Label>
-              <div className="flex flex-wrap gap-2">
-                {["low", "medium", "high"].map((priority, index) => (
-                  <Button key={index} variant="outline" size="sm">
-                    {priority.charAt(0).toUpperCase() + priority.slice(1)}
-                  </Button>
-                ))}
+                <Label>Assignee</Label>
+                <div className="flex flex-wrap gap-2">
+                  {availableAssignees.map((assignee, index) => (
+                    <Button
+                      key={index}
+                      size="sm"
+                      variant={
+                        filters.assignee.includes(assignee)
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() => {
+                        const newAssignees = filters.assignee.includes(assignee)
+                          ? filters.assignee.filter((a) => a !== assignee)
+                          : [...filters.assignee, assignee];
+
+                        handleFilterChange("assignee", newAssignees);
+                      }}
+                    >
+                      {assignee}
+                    </Button>
+                  ))}
+                </div>
               </div>
-            </div> */}
               <div className="space-y-2">
                 <Label>Due Date</Label>
                 <Input

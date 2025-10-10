@@ -74,6 +74,7 @@ export function useBoard(boardId: string) {
   const { user } = useUser();
   const [board, setBoard] = useState<Board | null>(null);
   const [columns, setColumns] = useState<ColumnWithTasks[]>([]);
+  const [availableAssignees, setAvailableAssignees] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -93,6 +94,15 @@ export function useBoard(boardId: string) {
       );
       setBoard(data.board);
       setColumns(data.columnsWithTasks);
+
+      // add filterable assignee
+      const availableAssigneesSet = new Set([] as string[]);
+      data.columnsWithTasks.forEach((col) =>
+        col.tasks.forEach((task) => {
+          if (task?.assignee) availableAssigneesSet.add(task.assignee);
+        })
+      );
+      setAvailableAssignees([...availableAssigneesSet]);
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "Failed to load board."
@@ -150,6 +160,11 @@ export function useBoard(boardId: string) {
           col.id === columnId ? { ...col, tasks: [...col.tasks, newTask] } : col
         )
       );
+
+      setAvailableAssignees((prev) => {
+        if (!taskData.assignee || prev.includes(taskData.assignee)) return prev;
+        return [...prev, taskData.assignee];
+      });
 
       return newTask;
     } catch (error) {
@@ -261,6 +276,7 @@ export function useBoard(boardId: string) {
   return {
     board,
     columns,
+    availableAssignees,
     loading,
     error,
     updateBoard,

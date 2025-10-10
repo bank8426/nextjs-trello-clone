@@ -243,3 +243,16 @@ TODO
     - When we setup `table` in `db`, we use `number` as `id` which mean it is `not unique` and `can be miss use` for `id` in `other table` which use `number` as `id` as well. I try try to migrate type of `id` to `uuid` but `db` not allowed even clean up all data.
   - Workaround
     - I give `DroppableColumn` component different `id` ("column\_`${column.id}`") instead and make `handleDragEnd` to check column based on new id format that we assigned instead.
+
+## <a name="Additional">Additional Feature</a>
+
+- Dashboard page
+  - Filter
+    - Display filter count
+    - Filter board by task count
+    - Dashboard
+- Board page
+  - Filter
+    - Display color for each priority
+    - Create task on each column instead of default to first column
+    - Filter task by assignee
