@@ -224,14 +224,17 @@ https://clerk.com/docs/nextjs/reference/hooks/use-session
     }, [isSessionLoaded, session]);
 ```
 
+- Shadcn Select component (Select dropdown)
+  - I try to allow user to select column when create task by adding new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string` which make component not work correctly when use with `column.id` which is `number`. So dropdown list value will disappear after i select item inside. So i need to parse `column.id` to `string` first before using it in component and then everything work fine.
+
 ## <a name="missing">Missing Features</a>
 
-TODO
+Feature that i think it should have
+Board Page
 
-- Board page
-  - filter by assignee
-- Dashboard page
-  - filter boards by task count
+- Delete Board
+- Reorder column
+- Edit/Delete task
 
 ## <a name="Known Bugs">Known Bugs</a>
 

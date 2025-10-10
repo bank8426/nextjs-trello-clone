@@ -46,11 +46,13 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 
 const DroppableColumn = ({
+  columns,
   column,
   children,
   onCreateTask,
   onEditColumn,
 }: {
+  columns: ColumnWithTasks[];
   column: ColumnWithTasks;
   children: React.ReactNode;
   onCreateTask: (taskData: any) => Promise<void>;
@@ -137,6 +139,22 @@ const DroppableColumn = ({
                     name="assignee"
                     placeholder="Who should do this?"
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Column</Label>
+                  <Select name="column" defaultValue={column.id.toString()}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {columns.map((column, index) => (
+                        <SelectItem key={index} value={column.id.toString()}>
+                          {column.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
@@ -365,19 +383,22 @@ const BoardPage = () => {
     } catch (error) {}
   };
 
-  const createTask = async (taskData: {
-    title: string;
-    description?: string;
-    assignee?: string;
-    dueDate?: string;
-    priority: "low" | "medium" | "high";
-  }) => {
-    const targetColumn = columns[0];
-    if (!targetColumn) {
+  const createTask = async (
+    taskData: {
+      title: string;
+      description?: string;
+      assignee?: string;
+      dueDate?: string;
+      priority: "low" | "medium" | "high";
+    },
+    columnId?: string
+  ) => {
+    const targetColumnId = columnId || columns[0].id;
+    if (!targetColumnId) {
       throw new Error("No column available to add task");
     }
 
-    await createRealTask(targetColumn.id, taskData);
+    await createRealTask(targetColumnId, taskData);
   };
 
   const handleCreateTask = async (e: React.FormEvent) => {
@@ -391,9 +412,10 @@ const BoardPage = () => {
       priority:
         (formData.get("priority") as "low" | "medium" | "high") || "medium",
     };
+    const columnId = formData.get("column") as string;
 
     if (taskData.title.trim()) {
-      await createTask(taskData);
+      await createTask(taskData, columnId);
 
       const trigger = document.querySelector(
         '[data-state="open"]'
@@ -741,6 +763,25 @@ const BoardPage = () => {
                   </div>
 
                   <div className="space-y-2">
+                    <Label>Column</Label>
+                    <Select
+                      name="column"
+                      defaultValue={columns[0]?.id.toString()}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {columns.map((column, index) => (
+                          <SelectItem key={index} value={column.id.toString()}>
+                            {column.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label>Priority</Label>
                     <Select name="priority" defaultValue="medium">
                       <SelectTrigger>
@@ -785,6 +826,7 @@ const BoardPage = () => {
               {filteredColumns.map((column, index) => (
                 <DroppableColumn
                   key={index}
+                  columns={columns}
                   column={column}
                   onCreateTask={handleCreateTask}
                   onEditColumn={handleEditColumn}
