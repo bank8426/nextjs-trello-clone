@@ -36,6 +36,29 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+function flattenObject(obj, prefix = "") {
+  const flattened = {};
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      const newKey = prefix ? `${prefix}.${key}` : key;
+
+      if (
+        typeof obj[key] === "object" &&
+        obj[key] !== null &&
+        !Array.isArray(obj[key])
+      ) {
+        // Recursively flatten nested objects
+        Object.assign(flattened, flattenObject(obj[key], newKey));
+      } else {
+        // Add non-object properties directly
+        flattened[newKey] = obj[key];
+      }
+    }
+  }
+  return flattened;
+}
+
 export default function DashboardPage() {
   const { user } = useUser();
   const { createBoard, boards, loading, error } = useBoards();
@@ -54,6 +77,13 @@ export default function DashboardPage() {
       max: null as number | null,
     },
   });
+
+  const filterCount = Object.values(flattenObject(filters)).reduce(
+    (count: number, v) => {
+      return count + (v !== null && v !== "" ? 1 : 0);
+    },
+    0
+  );
 
   const [showUpgradeDialog, setShowUpgradeDialog] = useState<boolean>(false);
 
@@ -246,9 +276,20 @@ export default function DashboardPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setIsFilterOpen(true)}
+                className={`text-xs sm:text-sm ${
+                  filterCount > 0 ? "bg-blue-100 border-blue-200" : ""
+                }`}
               >
-                <Filter />
-                Filter
+                <Filter className="h-3 w-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Filter</span>
+                {filterCount > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-xs ml-1 sm:ml-2 bg-blue-100 border-blue-200"
+                  >
+                    {filterCount}
+                  </Badge>
+                )}
               </Button>
               <Button onClick={handleCreateBoard}>
                 <Plus />
