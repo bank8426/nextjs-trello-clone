@@ -172,6 +172,19 @@ const DroppableColumn = ({
   );
 };
 
+const getPriorityColor = (priority: "low" | "medium" | "high") => {
+  switch (priority) {
+    case "high":
+      return "bg-red-500";
+    case "medium":
+      return "bg-yellow-500";
+    case "low":
+      return "bg-green-500";
+    default:
+      return "bg-yellow-500";
+  }
+};
+
 const SortableTask = ({ task }: { task: Task }) => {
   const {
     attributes,
@@ -187,18 +200,6 @@ const SortableTask = ({ task }: { task: Task }) => {
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const getPriorityColor = (priority: "low" | "medium" | "high") => {
-    switch (priority) {
-      case "high":
-        return "bg-red-500";
-      case "medium":
-        return "bg-yellow-500";
-      case "low":
-        return "bg-green-500";
-      default:
-        return "bg-yellow-500";
-    }
-  };
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
       <Card className="cursor-pointer hover:shadow-md transition-shadow">
@@ -620,6 +621,11 @@ const BoardPage = () => {
                         handleFilterChange("priority", newPriorities);
                       }}
                     >
+                      <div
+                        className={`w-2 h-2 rounded-full shrink-0 ${getPriorityColor(
+                          priority as "low" | "medium" | "high"
+                        )}`}
+                      />
                       {priority.charAt(0).toUpperCase() + priority.slice(1)}
                     </Button>
                   ))}
