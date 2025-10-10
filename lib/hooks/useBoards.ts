@@ -137,7 +137,7 @@ export function useBoard(boardId: string) {
       const newTask = await taskService.createTask(supabase!, {
         title: taskData.title,
         description: taskData.description || null,
-        assignee: taskData.dueDate || null,
+        assignee: taskData.assignee || null,
         due_date: taskData.dueDate || null,
         column_id: columnId,
         sort_order:
