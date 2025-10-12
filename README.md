@@ -226,18 +226,23 @@ Your server will run on [http://localhost:3000](http://localhost:3000/)
 
 ## <a name="learn">What I learned</a>
 
-TODO
-
 `Supabase`
 
-- Supabase, Row Level Security (RLS) policies are `PostgreSQL rules` to restrict access to data(SELECT, INSERT, UPDATE, and DELETE) in a table based on a user's identity or attributes. The benefit of this is to prevent other users from seeing another user's data by configuring on the database level. And by default, when you enable RLS, there will be no rule yet. So that prevents you from accessing or doing anything until you set it up. To set it, you just need to create a condition that you want and apply it to all SELECT, INSERT, UPDATE, and DELETE which will use the same condition.
+- Supabase, Row Level Security (RLS) policies are `PostgreSQL rules` to restrict access to data(SELECT, INSERT, UPDATE, and DELETE) in a table based on a user's identity or attributes. The benefit of this is to prevent other users from seeing another user's data by configuring on the database level. And by default, when you enable RLS, there will be no rule yet. So that prevents you from accessing or doing anything until you set it up. To set it, you just need to create a condition that you want and apply it to all SELECT, INSERT, UPDATE, and DELETE statements that use the same condition.
 
-`tailwind`
+`Tailwind`
 
-- class `group` `group-hover`
+- utility class `group` - use to mark that element and children as a `group element`
+- utility class `group-hover:<style>` - use to apply style to that element when the `group element` is hovered over
 
-- React
-- Create custom context, provider, hook
+`React`
+
+- Custom hook - is like you use normal React hook (e.g., `useEffect`, `useState`) in a component, but you can bundle them into a custom hook file first before importing it and reusing it in any other component.
+- Custom context - is something you will use when you need to pass data from a parent component to child/grandchild/very nested component without using props drilling (passing props from parent to child/grandchild/very nested component one by one). First, in the custom context file, you need to `createContext` with `props` that you want to pass, then create a `Provider` component, which is the wrapper component that provides data for those `props` to any component under it. You can also allow your provider to access data from outside, such as `PlanProvider`, or self-close `Provider` instances, like `SupabaseProvider`, in this project. Then create a custom context from `useContext`, which will be used in any component under the `Provider` component to access that data. See more [Custom Context](https://react.dev/learn/passing-data-deeply-with-context)
+
+`Clerk`
+
+- This is the second time I used Clerk. I used it in the previous project [Next.js Calendly Clone](https://github.com/bank8426/calendly-clone-next) for authentication only. But this time, with additional billing and subscription features, which also have `Clerk` built-in UI components. You can just set up a pricing plan in the Clerk dashboard and use "@clerk/nextjs/server" to get the user's plan information. Clerk also provides pricing plan UI components that we can use to display pricing plans in our app, which also has subscription and billing integration without doing any additional work.
 
 ## <a name="implementation-note">Implementation Notes</a>
 
@@ -302,7 +307,7 @@ TODO
 
 - Shadcn
   - Select component (Select dropdown)
-    - I try to allow the user to be able to select a column when creating a task by adding a new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string`, which makes the component not work correctly when used with `column.id`, which is `number`. So the dropdown list value will disappear after I select an item inside. So I need to parse `column.id` to `string` first before using it in the component, and then everything works fine.( P.S.This mismatch type of `column.id` also cause similar issue with all condition checking with triple equal operator `===`.)
+    - I try to allow the user to be able to select a column when creating a task by adding a new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string`, which makes the component not work correctly when used with `column.id`, which is `number`. So the dropdown list value will disappear after I select an item inside. So I need to parse `column.id` to `string` first before using it in the component, and then everything works fine.( P.S.This mismatch type of `column.id` also causes a similar issue with all condition checking with triple equal operator `===`.)
 
 ## <a name="missing">Missing Features</a>
 
