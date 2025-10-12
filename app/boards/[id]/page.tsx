@@ -443,33 +443,33 @@ const BoardPage = () => {
       : null;
 
     const sourceColumn = columns.find((col) =>
-      col.tasks.some((task) => task.id === taskId)
+      col.tasks.some((task) => task.id == taskId)
     );
     const targetColumn = columns.find(
-      (col) => col.id.toString() === overColumnId
+      (col) => col.id.toString() == overColumnId
     );
 
     // drag over another column, auto put task in last sort_order
     if (targetColumn) {
-      if (sourceColumn && sourceColumn.id !== targetColumn.id) {
+      if (sourceColumn && sourceColumn.id != targetColumn.id) {
         await moveTask(taskId, targetColumn.id, targetColumn.tasks.length);
       }
     }
     // drag reorder task in same column
     else {
       const targetColumn = columns.find((col) =>
-        col.tasks.some((task) => task.id === overId)
+        col.tasks.some((task) => task.id == overId)
       );
 
       if (sourceColumn && targetColumn) {
         const oldTaskIndex = sourceColumn.tasks.findIndex(
-          (task) => task.id === taskId
+          (task) => task.id == taskId
         );
         const newTaskIndex = targetColumn.tasks.findIndex(
-          (task) => task.id === overId
+          (task) => task.id == overId
         );
 
-        if (oldTaskIndex !== newTaskIndex) {
+        if (oldTaskIndex != newTaskIndex) {
           await moveTask(taskId, targetColumn.id, newTaskIndex);
         }
       }

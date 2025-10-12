@@ -187,8 +187,8 @@ export function useBoard(boardId: string) {
         let taskToMove: Task | null = null;
         // get specific task
         for (const col of newColumns) {
-          const taskIndex = col.tasks.findIndex((task) => task.id === taskId);
-          if (taskIndex !== -1) {
+          const taskIndex = col.tasks.findIndex((task) => task.id == taskId);
+          if (taskIndex != -1) {
             taskToMove = col.tasks[taskIndex];
             taskToMove.column_id = newColumnId;
             taskToMove.sort_order = newOrder;
@@ -207,7 +207,7 @@ export function useBoard(boardId: string) {
 
             // adjust sort_order of all tasks after specific task
             targetColumn.tasks.forEach(async (task, index) => {
-              if (task.id !== taskId && task.sort_order !== index) {
+              if (task.id != taskId && task.sort_order != index) {
                 task.sort_order = index;
                 await taskService.moveTask(
                   supabase!,
