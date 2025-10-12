@@ -170,7 +170,7 @@ export const boardDataService = {
 
     const columnsWithTasks = columns.map((column) => ({
       ...column,
-      tasks: tasks.filter((task) => task.column_id === column.id),
+      tasks: tasks.filter((task) => task.column_id == column.id),
     }));
 
     return {

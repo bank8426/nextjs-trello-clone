@@ -452,9 +452,6 @@ const BoardPage = () => {
     // drag over another column, auto put task in last sort_order
     if (targetColumn) {
       if (sourceColumn && sourceColumn.id !== targetColumn.id) {
-        console.log("change column");
-        console.log(taskId, targetColumn.id, targetColumn.tasks.length);
-
         await moveTask(taskId, targetColumn.id, targetColumn.tasks.length);
       }
     }
@@ -473,9 +470,6 @@ const BoardPage = () => {
         );
 
         if (oldTaskIndex !== newTaskIndex) {
-          console.log("reorder");
-          console.log(taskId, targetColumn.id, newTaskIndex);
-
           await moveTask(taskId, targetColumn.id, newTaskIndex);
         }
       }

@@ -151,13 +151,13 @@ export function useBoard(boardId: string) {
         due_date: taskData.dueDate || null,
         column_id: columnId,
         sort_order:
-          columns.find((column) => column.id === columnId)?.tasks.length || 0,
+          columns.find((column) => column.id == columnId)?.tasks.length || 0,
         priority: taskData.priority || "medium",
       });
 
       setColumns((prev) =>
         prev.map((col) =>
-          col.id === columnId ? { ...col, tasks: [...col.tasks, newTask] } : col
+          col.id == columnId ? { ...col, tasks: [...col.tasks, newTask] } : col
         )
       );
 
@@ -199,7 +199,7 @@ export function useBoard(boardId: string) {
 
         // move to target column
         if (taskToMove) {
-          const targetColumn = newColumns.find((col) => col.id === newColumnId);
+          const targetColumn = newColumns.find((col) => col.id == newColumnId);
 
           // move task to specific sort_order
           if (targetColumn) {
@@ -208,8 +208,6 @@ export function useBoard(boardId: string) {
             // adjust sort_order of all tasks after specific task
             targetColumn.tasks.forEach(async (task, index) => {
               if (task.id !== taskId && task.sort_order !== index) {
-                console.log(task.title, index);
-
                 task.sort_order = index;
                 await taskService.moveTask(
                   supabase!,
@@ -261,7 +259,7 @@ export function useBoard(boardId: string) {
 
       setColumns((prev) =>
         prev.map((col) =>
-          col.id === columnId ? { ...col, ...updatedColumn } : col
+          col.id == columnId ? { ...col, ...updatedColumn } : col
         )
       );
       return updatedColumn;

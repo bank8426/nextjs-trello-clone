@@ -253,7 +253,7 @@ TODO
 
 - Shadcn
   - Select component (Select dropdown)
-    - I try to allow the user to be able to select a column when creating a task by adding a new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string`, which makes the component not work correctly when used with `column.id`, which is `number`. So the dropdown list value will disappear after I select an item inside. So I need to parse `column.id` to `string` first before using it in the component, and then everything works fine.
+    - I try to allow the user to be able to select a column when creating a task by adding a new dropdown list with `value` as `column.id`. But `value` has `prop type` as `string`, which makes the component not work correctly when used with `column.id`, which is `number`. So the dropdown list value will disappear after I select an item inside. So I need to parse `column.id` to `string` first before using it in the component, and then everything works fine.( P.S.This mismatch type of `column.id` also cause similar issue with all condition checking with triple equal operator `===`.)
 
 ## <a name="missing">Missing Features</a>
 
