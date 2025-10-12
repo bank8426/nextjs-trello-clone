@@ -308,6 +308,7 @@ export default function DashboardPage() {
               onChange={(e) =>
                 setFilters((prev) => ({ ...prev, search: e.target.value }))
               }
+              value={filters.search}
             />
           </div>
 
