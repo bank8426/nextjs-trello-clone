@@ -1,5 +1,3 @@
-⚠️In progress...⚠️
-
 <h3 align="center">Trello Clone</h3>
 
 ## Table of Contents
